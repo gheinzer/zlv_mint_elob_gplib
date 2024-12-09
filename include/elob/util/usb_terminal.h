@@ -5,6 +5,7 @@
  */
 
 #include <elob/drivers/uart.h>
+#include <stdio.h>
 
 #ifndef USB_TERMINAL_H_
 #define USB_TERMINAL_H_
@@ -53,6 +54,14 @@ void usb_terminal_init(
 	UART_StopBitMode_t stopbitMode,
 	UART_ClockPolarityMode_t clockPolarityMode
 );
+
+/**
+ * @brief USB terminal `FILE` object. This allows for `printf`-like functions to be used.
+ * 
+ * If this is the first `FILE` object which is initialized, it is also assigned to `stdin`, `stdout` and `stderr`.
+ * 
+ */
+FILE* usb_terminal_stream;
 
 /**
  * @brief Prints a single char to the terminal.
@@ -130,5 +139,10 @@ unsigned long usb_terminal_ulPrompt(const char* prompt, unsigned long min, unsig
  * @return Returns `true` if something has been received from the terminal in the background, otherwise `false`.
  */
 bool usb_terminal_available();
+
+#define usb_terminal_printf(fmt, args) \
+	{ \
+		\ 	
+	}
 
 #endif /* USB_TERMINAL_H_ */

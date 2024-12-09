@@ -12,6 +12,20 @@
 
 #define _ANSI_ESCAPE_SEQUENCE 0x1B
 
+// Internal PUT function for the FILE stream
+int _usb_terminal_put(char c, FILE* f) {
+	try {
+		usb_terminal_printChar(c);
+	} catch {
+		return 1;
+	}
+}
+
+// Internal GET function for the FILE stream
+int _usb_terminal_get(FILE* f) {
+	return usb_terminal_readChar();
+}
+
 void usb_terminal_init(
 	unsigned long baudrate,
 	UART_ParityMode_t parityMode,
@@ -20,6 +34,11 @@ void usb_terminal_init(
 ) {
 	// Initialize the UART interface
 	uart_init(USB_UART_IF, baudrate, parityMode, stopbitMode, clockPolarityMode);
+	
+	// Initialize USB-UART FILE stream
+	// If this is the first initialized stream,
+	// this is set as stdin, stdout and stderr
+	usb_terminal_stream = fdevopen(_usb_terminal_put, _usb_terminal_get);
 	
 	// Ensure the terminal style is reset
 	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
