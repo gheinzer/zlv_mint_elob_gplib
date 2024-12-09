@@ -13,10 +13,10 @@ jobs:
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@1.9.8
         with:
-          doxyfile-path: docs/Doxyfile
-          working-directory: docs
+          doxyfile-path: './docs/Doxyfile'
+          working-directory: './docs'
           
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
-          path: docs/output
+          path: './docs/output'
