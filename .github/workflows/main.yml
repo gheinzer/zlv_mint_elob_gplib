@@ -1,0 +1,17 @@
+name: Build doxygen documentation
+on: [push]
+jobs:
+  build-doxygen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize submodules
+        run: git submodule update --init
+      - name: Doxygen Action
+        uses: mattnotmitt/doxygen-action@1.9.8
+        with:
+          doxyfile-path: ./docs/Doxyfile
+          working-directory: ./docs
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: ./docs/output
