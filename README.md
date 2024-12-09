@@ -1,6 +1,8 @@
 # ELOB GPL
 General-purpose library for the ZLV-Mint ELO-Board.
 
+Please refer to the documentation on [GitHub Pages](https://gheinzer.github.io/zlv_mint_elob_gplib/index.html) for more information.
+
 ## Highlights
 - Error handling with `try { } catch { }`
 - Native `printf` and `scanf` capabilities over USB-UART
