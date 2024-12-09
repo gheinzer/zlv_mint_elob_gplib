@@ -10,4 +10,6 @@ After initializing the USB terminal, you can use `printf` and `scanf` just like 
 Because C does not natively support throwing errors (other than the very rudimentary `setjmp` and `longjmp`), this library also includes a try-catch implementation done with preprocessor macros.
 
 Please refer to the @ref try macro documentation for more information.
+
+Note that you will have to initialize the error handling functionality using @ref error_init.
 */

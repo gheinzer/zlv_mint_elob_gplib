@@ -5,7 +5,7 @@
  */
 #include <elob/util/error.h>
 #include <elob/util/binary.h>
-#include <elob/util/usb_terminal.h>
+#include <elob/util/terminal.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -24,14 +24,14 @@ void error_init() {
 
 void _error_h_throw(unsigned int errorCode, const char* errorName) {
 	// Print the error name to the terminal
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
-	usb_terminal_print("\r\n\r\n");
-	usb_terminal_setColors(TERMINAL_CLR_BLACK, TERMINAL_CLR_RED);
-	usb_terminal_print(" ");
-	usb_terminal_print(errorName);
-	usb_terminal_print(" ");
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
-	usb_terminal_print("\r\n");
+	terminal_setStyle(TERMINAL_STYLE_RESET);
+	printf("\r\n\r\n");
+	terminal_setColors(TERMINAL_CLR_BLACK, TERMINAL_CLR_RED);
+	printf(" ");
+	printf(errorName);
+	printf(" ");
+	terminal_setStyle(TERMINAL_STYLE_RESET);
+	printf("\r\n");
 
 	// Store the error name and message in the global variables
 	_error_h_currentErrorName = errorName;
@@ -43,17 +43,17 @@ void _error_h_throw(unsigned int errorCode, const char* errorName) {
 
 void _error_h_throwWithMessage(unsigned int errorCode, const char* errorName, const char* errorMessage) {
 	// Print the error name and message to the terminal
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
-	usb_terminal_print("\r\n\r\n");
-	usb_terminal_setColors(TERMINAL_CLR_BLACK, TERMINAL_CLR_RED);
-	usb_terminal_print(" ");
-	usb_terminal_print(errorName);
-	usb_terminal_print(" ");
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
-	usb_terminal_setStyle(TERMINAL_STYLE_BOLD);
-	usb_terminal_print(" ");
-	usb_terminal_println(errorMessage);
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
+	terminal_setStyle(TERMINAL_STYLE_RESET);
+	printf("\r\n\r\n");
+	terminal_setColors(TERMINAL_CLR_BLACK, TERMINAL_CLR_RED);
+	printf(" ");
+	printf(errorName);
+	printf(" ");
+	terminal_setStyle(TERMINAL_STYLE_RESET);
+	terminal_setStyle(TERMINAL_STYLE_BOLD);
+	printf(" ");
+	printf("%s\r\n", errorMessage);
+	terminal_setStyle(TERMINAL_STYLE_RESET);
 
 	// Store the error name and message in the global variables
 	_error_h_currentErrorName = errorName;
@@ -74,9 +74,9 @@ void _error_h_uncaughtErrorHandler() {
 	CLEARBIT(PORTB, 7);
 	
 	// Inform the user that the error was not caught
-	usb_terminal_setStyle(TERMINAL_STYLE_DIM);
-	usb_terminal_println("The above error was not caught.");
-	usb_terminal_println("Reset the board to continue operation.");
+	terminal_setStyle(TERMINAL_STYLE_DIM);
+	printf("%s\r\n", "The above error was not caught.");
+	printf("%s\r\n", "Reset the board to continue operation.");
 	
 	// Enter an infinite loop
 	while(1);

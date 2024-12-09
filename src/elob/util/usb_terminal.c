@@ -4,13 +4,12 @@
  * @brief Source file for @ref usb_terminal.h.
  */
 
+#include <elob/util/terminal.h>
 #include <elob/util/usb_terminal.h>
 #include <elob/util/error.h>
 #include <elob/elob.h>
 
 #include <errno.h>
-
-#define _ANSI_ESCAPE_SEQUENCE 0x1B
 
 // Internal PUT function for the FILE stream
 int _usb_terminal_put(char c, FILE* f) {
@@ -39,22 +38,9 @@ void usb_terminal_init(
 	// If this is the first initialized stream,
 	// this is set as stdin, stdout and stderr
 	usb_terminal_stream = fdevopen(_usb_terminal_put, _usb_terminal_get);
-	
-	// Ensure the terminal style is reset
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
-	
-	// Print an USB terminal initialization message
-	usb_terminal_setStyle(TERMINAL_STYLE_DIM);
-	usb_terminal_println("\r\n\r\nUSB Terminal module initialized.");
-
-	// Build the build date and time
-	usb_terminal_println("Build date and time: ");
-	usb_terminal_print(__DATE__);
-	usb_terminal_print(" ");
-	usb_terminal_println(__TIME__);
 
 	// Reset the terminal style
-	usb_terminal_setStyle(TERMINAL_STYLE_RESET);
+	terminal_setStyle(TERMINAL_STYLE_RESET);
 }
 
 void usb_terminal_printChar(char c) {
@@ -104,32 +90,6 @@ void usb_terminal_readln(char* target, size_t maxLength) {
 
 	// Echo a CRLF to the terminal
 	uart_sendString(USB_UART_IF, "\r\n");
-}
-
-void usb_terminal_setForegroundColor(USB_TerminalColor_t color) {
-	usb_terminal_printChar(_ANSI_ESCAPE_SEQUENCE);
-	usb_terminal_print("[3");
-	usb_terminal_printChar(color + '0');
-	usb_terminal_print("m");
-}
-
-void usb_terminal_setBackgroundColor(USB_TerminalColor_t color) {
-	usb_terminal_printChar(_ANSI_ESCAPE_SEQUENCE);
-	usb_terminal_print("[4");
-	usb_terminal_printChar(color + '0');
-	usb_terminal_print("m");
-}
-
-void usb_terminal_setColors(USB_TerminalColor_t foreground, USB_TerminalColor_t background) {
-	usb_terminal_setForegroundColor(foreground);
-	usb_terminal_setBackgroundColor(background);
-}
-
-void usb_terminal_setStyle(USB_TerminalStyle_t style) {
-	usb_terminal_printChar(_ANSI_ESCAPE_SEQUENCE);
-	usb_terminal_print("[");
-	usb_terminal_printChar(style + '0');
-	usb_terminal_print("m");
 }
 
 bool usb_terminal_available() {
