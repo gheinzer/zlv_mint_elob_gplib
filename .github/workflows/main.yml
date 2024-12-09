@@ -6,6 +6,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
+
+      - name: Debugging
+        run: ls -al -r
           
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@1.9.8
