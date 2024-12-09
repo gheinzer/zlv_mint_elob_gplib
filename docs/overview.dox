@@ -1,0 +1,13 @@
+/**
+@page overview Overview
+
+@section standard-io Standard I/O
+This library includes native support for `printf` and `scanf`-like functions. For these to work, you have to initialize the USB terminal using @ref usb_terminal_init. This automatically initializes `stdout`, `stderr` and `stdin`.
+
+After initializing the USB terminal, you can use `printf` and `scanf` just like you would with a terminal application.
+
+@section error-handling Error handling
+Because C does not natively support throwing errors (other than the very rudimentary `setjmp` and `longjmp`), this library also includes a try-catch implementation done with preprocessor macros.
+
+Please refer to the @ref try macro documentation for more information.
+*/
