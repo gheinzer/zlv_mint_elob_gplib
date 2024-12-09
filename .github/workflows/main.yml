@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
+        with:
+          submodules: true
 
       - name: Debugging
         run: ls -al -r docs
