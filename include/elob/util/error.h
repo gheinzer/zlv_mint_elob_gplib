@@ -75,55 +75,7 @@ const char* _error_h_currentErrorMessage;
 /**
  * @brief Rudimentary try-catch-implementation in C.
  * 
- * This is an example of the usage of this block:
- * @code{.c}
- * try {
- *     // Put some error-prone code here
- * 	   // Throw an error using the throw or the throwMessage macro
- * } catch {
- *     // Error handler
- *     // Called if the above error handler has not caught anything
- * }
- * @endcode
- * 
- * If you want to process the error code further,
- * you can use the @ref catchErrorCode macro:
- * @code{.c}
- * try {
- *     // Put some error-prone code here
- * 	   // Throw an error using the throw or the throwMessage macro
- * } catchErrorCode(error_t error) {
- *     // Error handler
- *     // The error code is now saved in the variable 'error'.
- * }
- * @endcode
- * 
- * In the same way, you can use @ref catchErrorName and @ref catchErrorMessage
- * @code{.c}
- * try { } catchErrorName(error_t error, const char* errorName) { }
- * // or
- * try { } catchErrorMessage(error_t error, const char* errorName, const char* errorMessage) { }
- * @endcode
- * 
- * If you don't wrap error-prone code in a try-catch wrapper, thrown errors
- * are caught globally and the execution of your application stops. The only way to resume the execution of the 
- * program in such a case is resetting the microcontroller.
- * 
- * This implementation should be safe to use multiple times in the same scope. Nested
- * try-catch blocks are also allowed.
- * 
- * Note that any errors thrown in the `catch` block are handled by the higher-level error handler, i.e. a
- * higher-level try-catch-block or the global error handler. Any error thrown in the `catch` block are
- * handled the same way as errors thrown right outside the `catch` block.
- * 
- * Any code after `throw` or `throwMessage` is unreachable, i.e. will never by executed.
- * 
- * Under the hood, this works with the global @ref _error_h_currentJmpBuf variable. It always stores
- * a pointer to the the `jmp_buf` of the currently active try-catch-block, or the `jmp_buf` of the global
- * error handler. If you now create a new try-catch-block, @ref _error_h_currentJmpBuf is updated while
- * storing the previous value in `_error_h_previousJmpBuf`. If you now close the block with the `catch`
- * macro, @ref _error_h_currentJmpBuf is reset to the previous state and any further errors go to the
- * higher-level try-catch-block (or the global error handler if no higher-level try-catch-block exists).
+ * Please refer to the @ref error-handling section for more information.
  */
 #define try \
 	{ \
@@ -144,8 +96,7 @@ const char* _error_h_currentErrorMessage;
 	}
 
 /**
- * @brief Catch macro used for try-catch block implementation. Please refer to the documentation
- * of @ref try for more information.
+ * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
  * 
  */
 #define catch \
@@ -153,8 +104,7 @@ const char* _error_h_currentErrorMessage;
 	if(_error_h_setjmpReturnValue)
 
 /**
- * @brief Catch macro used for try-catch block implementation. Please refer to the documentation
- * of @ref try for more information.
+ * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
  * 
  * This macro specifically allows the error code to be processed furtherly in a variable.
  * 
@@ -166,8 +116,7 @@ const char* _error_h_currentErrorMessage;
 	if(_error_h_setjmpReturnValue)
 
 /**
- * @brief Catch macro used for try-catch block implementation. Please refer to the documentation
- * of @ref try for more information.
+ * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
  * 
  * This macro specifically allows the error code and the error name to be processed furtherly in a variable.
  * 
@@ -182,8 +131,7 @@ const char* _error_h_currentErrorMessage;
 	if(_error_h_setjmpReturnValue)
 
 /**
- * @brief Catch macro used for try-catch block implementation. Please refer to the documentation
- * of @ref try for more information.
+ * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
  * 
  * This macro specifically allows the error code and the error name to be processed furtherly in a variable.
  * 
@@ -202,6 +150,7 @@ const char* _error_h_currentErrorMessage;
 
 /**
  * @brief Thrwos an error with the specified error code.
+ * Please refer to the @ref error-handling section for more information.
  * 
  * @param error The error code you want to throw.
  */
@@ -209,6 +158,7 @@ const char* _error_h_currentErrorMessage;
 
 /**
  * @brief Throws an error with the specified error code and message.
+ * Please refer to the @ref error-handling section for more information.
  * 
  * @param error The error code you want to throw.
  * @param msg The error message you want to throw.
@@ -218,6 +168,8 @@ const char* _error_h_currentErrorMessage;
 /**
  * @brief Initializes the error library. Call this before using any functions
  * or macros of this library.
+ * 
+ * Please refer to the @ref error-handling section for more information.
  */
 void error_init();
 

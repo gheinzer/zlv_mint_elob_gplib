@@ -9,7 +9,55 @@ After initializing the USB terminal, you can use `printf` and `scanf` just like 
 @section error-handling Error handling
 Because C does not natively support throwing errors (other than the very rudimentary `setjmp` and `longjmp`), this library also includes a try-catch implementation done with preprocessor macros.
 
-Please refer to the @ref try macro documentation for more information.
+@note You will have to initialize the error handling functionality using @ref error_init.
 
-Note that you will have to initialize the error handling functionality using @ref error_init.
+This is an example of the usage of this block:
+@code{.c}
+try {
+    // Put some error-prone code here
+	   // Throw an error using the throw or the throwMessage macro
+} catch {
+    // Error handler
+    // Called if the above error handler has not caught anything
+}
+@endcode
+
+If you want to process the error code further,
+you can use the @ref catchErrorCode macro:
+@code{.c}
+try {
+    // Put some error-prone code here
+	   // Throw an error using the throw or the throwMessage macro
+} catchErrorCode(error_t error) {
+    // Error handler
+    // The error code is now saved in the variable 'error'.
+}
+@endcode
+
+In the same way, you can use @ref catchErrorName and @ref catchErrorMessage
+@code{.c}
+try { } catchErrorName(error_t error, const char* errorName) { }
+// or
+try { } catchErrorMessage(error_t error, const char* errorName, const char* errorMessage) { }
+@endcode
+
+If you don't wrap error-prone code in a try-catch wrapper, thrown errors
+are caught globally and the execution of your application stops. The only way to resume the execution of the 
+program in such a case is resetting the microcontroller.
+
+This implementation should be safe to use multiple times in the same scope. Nested
+try-catch blocks are also allowed.
+
+Note that any errors thrown in the `catch` block are handled by the higher-level error handler, i.e. a
+higher-level try-catch-block or the global error handler. Any error thrown in the `catch` block are
+handled the same way as errors thrown right outside the `catch` block.
+
+Any code after `throw` or `throwMessage` is unreachable, i.e. will never by executed.
+
+Under the hood, this works with the global @ref _error_h_currentJmpBuf variable. It always stores
+a pointer to the the `jmp_buf` of the currently active try-catch-block, or the `jmp_buf` of the global
+error handler. If you now create a new try-catch-block, @ref _error_h_currentJmpBuf is updated while
+storing the previous value in `_error_h_previousJmpBuf`. If you now close the block with the `catch`
+macro, @ref _error_h_currentJmpBuf is reset to the previous state and any further errors go to the
+higher-level try-catch-block (or the global error handler if no higher-level try-catch-block exists).
 */
