@@ -166,6 +166,23 @@ const char* _error_h_currentErrorMessage;
 #define throwMessage(error, msg) _error_h_throwWithMessage(error, #error, msg)
 
 /**
+ * @brief Evaluates the specified @p condition and throws an @p error if the condition is `false`.
+ * 
+ * @param condition The condition to evaluate before throwing an error.
+ * @param error The error code you want to throw. 
+ */
+#define assert(condition, error) if(!(condition)) { throw(error); }
+
+/**
+ * @brief Evaluates the specified @p condition and throws an @p error with a @p message if the condition is `false`.
+ * 
+ * @param condition The condition to evaluate before throwing an error.
+ * @param error The error code you want to throw.
+ * @param message The error message you want to pass with the error.
+ */
+#define assertMessage(condition, error, message) if(!(condition)) { throwMessage(error, message); }
+
+/**
  * @brief Initializes the error library. Call this before using any functions
  * or macros of this library.
  * 
