@@ -35,7 +35,7 @@ void usb_terminal_init(
 	uart_init(USB_UART_IF, baudrate, parityMode, stopbitMode, clockPolarityMode);
 	
 	// Initialize USB-UART FILE stream
-	usb_terminal_f = USB_UART_IF_STREAM;
+	usb_terminal_f = fdevopen(_usb_terminal_put, _usb_terminal_get);
 	stdout = usb_terminal_f;
 	stdin = usb_terminal_f;
 	stderr = usb_terminal_f;
