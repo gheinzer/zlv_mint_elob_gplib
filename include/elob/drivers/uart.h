@@ -100,9 +100,25 @@ typedef enum {
 	UART3 = 3
 } UART_Interface_t;
 
+/**
+ * @brief Read-and-write-capable `FILE*` stream for the UART0 interface.
+ * 
+ */
 FILE* UART0_f;
+/**
+ * @brief Read-and-write-capable `FILE*` stream for the UART1 interface.
+ * 
+ */
 FILE* UART1_f;
+/**
+ * @brief Read-and-write-capable `FILE*` stream for the UART2 interface.
+ * 
+ */
 FILE* UART2_f;
+/**
+ * @brief Read-and-write-capable `FILE*` stream for the UART3 interface.
+ * 
+ */
 FILE* UART3_f;
 
 /**
