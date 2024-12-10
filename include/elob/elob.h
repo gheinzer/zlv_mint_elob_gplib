@@ -19,6 +19,12 @@
 #define USB_UART_IF UART1
 
 /**
+ * @brief UART stream for serial-over-usb.
+ *
+ */
+#define USB_UART_IF_STREAM UART1_f
+
+/**
  * @brief Initializes the most important functions of the ELO-Board, e.g. the DDR registers.
  *
  */

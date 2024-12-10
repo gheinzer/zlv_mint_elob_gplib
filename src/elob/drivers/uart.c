@@ -77,6 +77,16 @@ volatile Buffer_t _uartBuffers[] = {
 	}
 };
 
+// GET and PUT functions for the FILE-type streams
+int _uart0_put(char* c, FILE* f) { uart_sendByte(UART0, c); return 0; };
+int _uart1_put(char* c, FILE* f) { uart_sendByte(UART1, c); return 0; };
+int _uart2_put(char* c, FILE* f) { uart_sendByte(UART2, c); return 0; };
+int _uart3_put(char* c, FILE* f) { uart_sendByte(UART3, c); return 0; };
+int _uart0_get(char* c, FILE* f) { return uart_readByte(UART0); };
+int _uart1_get(char* c, FILE* f) { return uart_readByte(UART1); };
+int _uart2_get(char* c, FILE* f) { return uart_readByte(UART2); };
+int _uart3_get(char* c, FILE* f) { return uart_readByte(UART3); };
+
 void uart_init(
 	UART_Interface_t uartInterface, 
 	unsigned long baudrate,
@@ -114,6 +124,28 @@ void uart_init(
 	// Configure the parity setings
 	WRITEBIT(_UART_REGISTER(_CTRL_REGISTER_C), UPM00, CHECKBIT(parityMode, 0));
 	WRITEBIT(_UART_REGISTER(_CTRL_REGISTER_C), UPM01, CHECKBIT(parityMode, 1));
+	
+	switch(uartInterface) {
+		case UART0:
+			fclose(UART0_f);
+			UART0_f = fdevopen(_uart0_put, _uart0_get);
+			break;
+			
+		case UART1:
+			fclose(UART1_f);
+			UART1_f = fdevopen(_uart1_put, _uart1_get);
+			break;
+		
+		case UART2:
+			fclose(UART2_f);
+			UART2_f = fdevopen(_uart2_put, _uart2_get);
+			break;
+		
+		case UART3:
+			fclose(UART3_f);
+			UART3_f = fdevopen(_uart3_put, _uart3_get);
+			break;	
+	}
 }
 
 void uart_setBaudrate(UART_Interface_t uartInterface, unsigned long baudrate) {

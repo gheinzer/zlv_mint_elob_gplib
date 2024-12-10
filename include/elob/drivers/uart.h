@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "../../../../config.h"
 
 #ifndef UART_H_
@@ -98,6 +99,11 @@ typedef enum {
 	 */
 	UART3 = 3
 } UART_Interface_t;
+
+FILE* UART0_f;
+FILE* UART1_f;
+FILE* UART2_f;
+FILE* UART3_f;
 
 /**
  * @brief Initializes the given UART interface with the given parameters.

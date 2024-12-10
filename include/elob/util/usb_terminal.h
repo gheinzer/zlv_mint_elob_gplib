@@ -11,7 +11,7 @@
 #define USB_TERMINAL_H_
 
 /**
- * @brief Initializes the UART interface used for the USB-over-Serial connection.
+ * @brief Initializes the UART interface used for the USB-over-Serial connection and sets `stdout`, `stderr` and `stdin` to usb_terminal_f.
  * 
  * @param baudrate Baudrate used for the connection.
  * @param parityMode Parity mode for the connection.
@@ -28,10 +28,8 @@ void usb_terminal_init(
 /**
  * @brief USB terminal `FILE` object. This allows for `printf`-like functions to be used.
  * 
- * If this is the first `FILE` object which is initialized, it is also assigned to `stdin`, `stdout` and `stderr`.
- * 
  */
-FILE* usb_terminal_stream;
+FILE* usb_terminal_f;
 
 /**
  * @brief Prints a single char to the terminal.

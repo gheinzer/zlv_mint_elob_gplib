@@ -35,9 +35,10 @@ void usb_terminal_init(
 	uart_init(USB_UART_IF, baudrate, parityMode, stopbitMode, clockPolarityMode);
 	
 	// Initialize USB-UART FILE stream
-	// If this is the first initialized stream,
-	// this is set as stdin, stdout and stderr
-	usb_terminal_stream = fdevopen(_usb_terminal_put, _usb_terminal_get);
+	usb_terminal_f = USB_UART_IF_STREAM;
+	stdout = usb_terminal_f;
+	stdin = usb_terminal_f;
+	stderr = usb_terminal_f;
 
 	// Reset the terminal style
 	terminal_setStyle(TERMINAL_STYLE_RESET);
