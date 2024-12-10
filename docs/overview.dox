@@ -60,4 +60,20 @@ error handler. If you now create a new try-catch-block, @ref _error_h_currentJmp
 storing the previous value in `_error_h_previousJmpBuf`. If you now close the block with the `catch`
 macro, @ref _error_h_currentJmpBuf is reset to the previous state and any further errors go to the
 higher-level try-catch-block (or the global error handler if no higher-level try-catch-block exists).
+
+@section unit-handing Scientific unit handling
+@ref si_units.h includes routines for handling physical quantities (associated with units). This library allows you to use and convert
+physical quantities with their specific precisions easily.
+
+The library works with the concept of significant digits. The significant digits of a number are all digits, before or after the decimal point,
+not including leading zeros. Trailing zeros count as additional precision and are therefore also counted.
+
+You can create a quantity using the @ref SI function. You will *have to* pass the precision of the number you are passing,
+so that the precision can be taken into account when outputting it to the console.
+
+When outputting a quantity to the console, the precision is taken into account. Only the specified number of significant digits
+will be outputted, no more and no less.
+
+For a reference of the pre-defined units, as well as the related functions, please refer to the file reference of @ref si_units.h.
+
 */

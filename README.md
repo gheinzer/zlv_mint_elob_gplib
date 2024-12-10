@@ -6,6 +6,7 @@ Please refer to the documentation on [GitHub Pages](https://gheinzer.github.io/z
 ## Highlights
 - Error handling with `try { } catch { }`
 - Native `printf` and `scanf` capabilities over USB-UART
+- Scientific unit handling library
 - `DS1307` Real-Time-Clock driver
 - Synchrounous, buffered UART driver
 - Terminal emulator customization (e.g. text color customization)
