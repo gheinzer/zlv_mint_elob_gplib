@@ -47,7 +47,16 @@ typedef enum {
 	/**
 	 * @brief Occurs when a string with an invalid format is passed.
 	 */
-	ERR_INVALID_STR
+	ERR_INVALID_STR,
+	/**
+	 * @brief Occurs when an invalid unit is passed. 
+	 */
+	ERR_INVALID_UNIT,
+	/**
+	 * @brief Occurs when the specified prefix can't possibly represent
+	 * the number withuot violating the precision.
+	 */
+	ERR_PRECISION_VIOLATED
 } error_t;
 
 /**
