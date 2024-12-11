@@ -23,19 +23,12 @@ void error_init() {
 	}
 }
 
-void _error_h_throw(unsigned int errorCode, const char* errorName) {
+void _error_h_throw(unsigned int errorCode, const char* errorName, const char* errorMessage, int line, const char* file) {
 	// Store the error name and message in the global variables
 	_error_h_currentErrorName = errorName;
-	_error_h_currentErrorMessage = 0; // Null pointer as no error message was thrown
-	
-	// Jump to the error handler
-	longjmp(_error_h_currentJmpBuf, errorCode);
-}
-
-void _error_h_throwWithMessage(unsigned int errorCode, const char* errorName, const char* errorMessage) {
-	// Store the error name and message in the global variables
-	_error_h_currentErrorName = errorName;
-	_error_h_currentErrorMessage = errorMessage;
+	_error_h_currentErrorMessage = errorMessage; // Null pointer as no error message was thrown
+	_error_h_currentErrorLine = line;
+	_error_h_currentErrorFile = file;
 	
 	// Jump to the error handler
 	longjmp(_error_h_currentJmpBuf, errorCode);
@@ -63,8 +56,9 @@ void _error_h_uncaughtErrorHandler() {
 	
 	// Inform the user that the error was not caught
 	terminal_setStyle(TERMINAL_STYLE_DIM);
-	fprintf(stderr, "%s\r\n", "The above error was not caught.");
-	fprintf(stderr, "%s\r\n", "Reset the board to continue operation.");
+	fprintf(stderr, "Error thrown in file '%s' on line %d\r\n", _error_h_currentErrorFile, _error_h_currentErrorLine);
+	fprintf(stderr, "The above error was not caught.\r\n");
+	fprintf(stderr, "Reset the board to continue operation.\r\n");
 	
 	// Enter an infinite loop
 	while(1);

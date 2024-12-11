@@ -80,6 +80,16 @@ const char* _error_h_currentErrorName;
  * Do not access this in your application.
  */
 const char* _error_h_currentErrorMessage;
+/**
+ * @brief Internal error line variable.
+ * Do not access this in your application.
+ */
+int _error_h_currentErrorLine;
+/**
+ * @brief Internal error file name pointer.
+ * Do not access this in your application.
+ */
+const char* _error_h_currentErrorFile;
 
 /**
  * @brief Rudimentary try-catch-implementation in C.
@@ -163,7 +173,7 @@ const char* _error_h_currentErrorMessage;
  * 
  * @param error The error code you want to throw.
  */
-#define throw(error) _error_h_throw(error, #error)
+#define throw(error) _error_h_throw(error, #error, 0, __LINE__, __FILE__)
 
 /**
  * @brief Throws an error with the specified error code and message.
@@ -172,7 +182,7 @@ const char* _error_h_currentErrorMessage;
  * @param error The error code you want to throw.
  * @param msg The error message you want to throw.
  */
-#define throwMessage(error, msg) _error_h_throwWithMessage(error, #error, msg)
+#define throwMessage(error, msg) _error_h_throw(error, #error, msg, __LINE__, __FILE__)
 
 /**
  * @brief Evaluates the specified @p condition and throws an @p error if the condition is `false`.
@@ -198,5 +208,15 @@ const char* _error_h_currentErrorMessage;
  * Please refer to the @ref error-handling section for more information.
  */
 void error_init();
+
+/**
+ * @brief Internal error throw function. Do not use in your code, use @ref throw (or similar) instead.
+ */
+void _error_h_throw(unsigned int errorCode, const char* errorName, const char* errorMessage, int line, const char* file);
+
+/**
+ * @brief Internal uncaught error handler. Called automatically, do not use in your code.
+ */
+void _error_h_uncaughtErrorHandler();
 
 #endif /* ERROR_H_ */
