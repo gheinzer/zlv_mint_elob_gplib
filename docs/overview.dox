@@ -22,23 +22,16 @@ try {
 }
 @endcode
 
-If you want to process the error code further,
-you can use the @ref catchErrorCode macro:
+If you want to process the error information further,
+you can use the @ref catchError macro:
 @code{.c}
 try {
     // Put some error-prone code here
 	   // Throw an error using the throw or the throwMessage macro
-} catchErrorCode(error_t error) {
+} catchError(Error_t error) {
     // Error handler
-    // The error code is now saved in the variable 'error'.
+    // The error information is in the 'error' variable
 }
-@endcode
-
-In the same way, you can use @ref catchErrorName and @ref catchErrorMessage
-@code{.c}
-try { } catchErrorName(error_t error, const char* errorName) { }
-// or
-try { } catchErrorMessage(error_t error, const char* errorName, const char* errorMessage) { }
 @endcode
 
 If you don't wrap error-prone code in a try-catch wrapper, thrown errors
