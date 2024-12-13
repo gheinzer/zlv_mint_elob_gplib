@@ -57,7 +57,20 @@ typedef enum {
 	 * the number withuot violating the precision.
 	 */
 	ERR_PRECISION_VIOLATED
-} error_t;
+} ErrorCode_t;
+
+/**
+ * @brief Struct containing all error information.
+ * 
+ */
+typedef struct {
+	unsigned int code;
+	const char* name;
+	const char* message;
+	const char* file;
+	const char* functionName;
+	unsigned int line;
+} Error_t;
 
 /**
  * @brief Internal pointer used for the setjmp library.
@@ -71,25 +84,10 @@ jmp_buf* _error_h_currentJmpBuf;
 int _error_h_setjmpReturnValue;
 
 /**
- * @brief Internal error name pointer.
- * Do not access this in your application.
+ * @brief Internal current error value.
+ * Do no access this directly in your application. 
  */
-const char* _error_h_currentErrorName;
-/**
- * @brief Internal error message pointer.
- * Do not access this in your application.
- */
-const char* _error_h_currentErrorMessage;
-/**
- * @brief Internal error line variable.
- * Do not access this in your application.
- */
-int _error_h_currentErrorLine;
-/**
- * @brief Internal error file name pointer.
- * Do not access this in your application.
- */
-const char* _error_h_currentErrorFile;
+Error_t _error_h_currentError;
 
 /**
  * @brief Rudimentary try-catch-implementation in C.
@@ -125,46 +123,13 @@ const char* _error_h_currentErrorFile;
 /**
  * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
  * 
- * This macro specifically allows the error code to be processed furtherly in a variable.
+ * This macro specifically allows the error information to be processed further.
  * 
- * @param errorCodeVariable Error code variable to write the error code to. This can also be a declaration (i.e. with leading data type).
+ * @param errorVariable Error code variable to write the error struct to. This has to be a @ref Error_t variable.
  */
-#define catchErrorCode(errorCodeVariable) \
+#define catchError(errorVariable) \
 	_closeTry \
-	errorCodeVariable = _error_h_setjmpReturnValue; \
-	if(_error_h_setjmpReturnValue)
-
-/**
- * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
- * 
- * This macro specifically allows the error code and the error name to be processed furtherly in a variable.
- * 
- * @param errorCodeVariable Error code variable to write the error code to. This can also be a declaration (i.e. with leading data type).
- * @param errorNameVariable Error name variable to write the error name string pointer to. 
- * The type of this variable has to be `const char*`. This can also be a declaration (i.e. with leading data type).
- */
-#define catchErrorName(errorCodeVariable, errorNameVariable) \
-	_closeTry \
-	errorCodeVariable = _error_h_setjmpReturnValue; \
-	errorNameVariable = _error_h_currentErrorName; \
-	if(_error_h_setjmpReturnValue)
-
-/**
- * @brief Catch macro used for try-catch block implementation. Please refer to the @ref error-handling section for more information.
- * 
- * This macro specifically allows the error code and the error name to be processed furtherly in a variable.
- * 
- * @param errorCodeVariable Error code variable to write the error code to. This can also be a declaration (i.e. with leading data type).
- * @param errorNameVariable Error name variable to write the error name string pointer to. 
- * The type of this variable has to be `const char*`. This can also be a declaration (i.e. with leading data type).
- * @param errorMessageVariable Error message variable to write the error message string pointer to.
- * The type of this variable has to be `const char*`. This can also be a declaration (i.e. with leading data type).
- */
-#define catchErrorMessage(errorCodeVariable, errorNameVariable, errorMessageVariable) \
-	_closeTry \
-	errorCodeVariable = _error_h_setjmpReturnValue; \
-	errorNameVariable = _error_h_currentErrorName; \
-	errorMessageVariable = _error_h_currentErrorMessage; \
+	errorVariable = _error_h_currentError; \
 	if(_error_h_setjmpReturnValue)
 
 /**
@@ -173,7 +138,7 @@ const char* _error_h_currentErrorFile;
  * 
  * @param error The error code you want to throw.
  */
-#define throw(error) _error_h_throw(error, #error, 0, __LINE__, __FILE__)
+#define throw(error) _error_h_throw(error, #error, 0, __LINE__, __FILE__, __FUNCTION__)
 
 /**
  * @brief Throws an error with the specified error code and message.
@@ -182,7 +147,7 @@ const char* _error_h_currentErrorFile;
  * @param error The error code you want to throw.
  * @param msg The error message you want to throw.
  */
-#define throwMessage(error, msg) _error_h_throw(error, #error, msg, __LINE__, __FILE__)
+#define throwMessage(error, msg) _error_h_throw(error, #error, msg, __LINE__, __FILE__, __FUNCTION__)
 
 /**
  * @brief Evaluates the specified @p condition and throws an @p error if the condition is `false`.
@@ -210,9 +175,23 @@ const char* _error_h_currentErrorFile;
 void error_init();
 
 /**
+ * @brief Re-throw an error struct. This can be used in a @ref catchError block to re-throw the error.
+ * 
+ * @param errorStruct The @ref Error_t struct containing the error information.
+ */
+void error_rethrow(Error_t errorStruct);
+
+/**
+ * @brief Prints the given error information to stderr.
+ * 
+ * @param errorStruct The @ref Error_t struct containing the error information.
+ */
+void error_print(Error_t errorStruct);
+
+/**
  * @brief Internal error throw function. Do not use in your code, use @ref throw (or similar) instead.
  */
-void _error_h_throw(unsigned int errorCode, const char* errorName, const char* errorMessage, int line, const char* file);
+void _error_h_throw(unsigned int errorCode, const char* errorName, const char* errorMessage, int line, const char* file, const char* functionName);
 
 /**
  * @brief Internal uncaught error handler. Called automatically, do not use in your code.

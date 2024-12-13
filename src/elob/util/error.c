@@ -23,12 +23,14 @@ void error_init() {
 	}
 }
 
-void _error_h_throw(unsigned int errorCode, const char* errorName, const char* errorMessage, int line, const char* file) {
+void _error_h_throw(unsigned int errorCode, const char* errorName, const char* errorMessage, int line, const char* file, const char* functionName) {
 	// Store the error name and message in the global variables
-	_error_h_currentErrorName = errorName;
-	_error_h_currentErrorMessage = errorMessage; // Null pointer as no error message was thrown
-	_error_h_currentErrorLine = line;
-	_error_h_currentErrorFile = file;
+	_error_h_currentError.code = errorCode;
+	_error_h_currentError.name = errorName;
+	_error_h_currentError.message = errorMessage; // Null pointer as no error message was thrown
+	_error_h_currentError.line = line;
+	_error_h_currentError.file = file;
+	_error_h_currentError.functionName = functionName;
 	
 	// Jump to the error handler
 	longjmp(_error_h_currentJmpBuf, errorCode);
@@ -44,22 +46,30 @@ void _error_h_uncaughtErrorHandler() {
 	CLEARBIT(PORTB, 6);
 	CLEARBIT(PORTB, 7);
 	
-	// Print the error information to stderr
-	terminal_setStyle(TERMINAL_STYLE_RESET);
-	fprintf(stderr, "\r\n");
-	terminal_setColors(TERMINAL_CLR_BLACK, TERMINAL_CLR_RED);
-	fprintf(stderr, " %s ", _error_h_currentErrorName);
-	terminal_setStyle(TERMINAL_STYLE_RESET);
-	terminal_setStyle(TERMINAL_STYLE_BOLD);
-	fprintf(stderr, " %s\r\n", _error_h_currentErrorMessage);
-	terminal_setStyle(TERMINAL_STYLE_RESET);
+	error_print(_error_h_currentError);
 	
 	// Inform the user that the error was not caught
 	terminal_setStyle(TERMINAL_STYLE_DIM);
-	fprintf(stderr, "Error thrown in file '%s' on line %d\r\n", _error_h_currentErrorFile, _error_h_currentErrorLine);
+	fprintf(stderr, "Error thrown in file '%s' in function '%s' (on line %d)\r\n", _error_h_currentError.file, _error_h_currentError.functionName, _error_h_currentError.line);
 	fprintf(stderr, "The above error was not caught.\r\n");
 	fprintf(stderr, "Reset the board to continue operation.\r\n");
 	
 	// Enter an infinite loop
 	while(1);
+}
+
+void error_rethrow(Error_t errorStruct) {
+	_error_h_throw(errorStruct.code, errorStruct.name, errorStruct.message, errorStruct.line, errorStruct.file, errorStruct.functionName);
+}
+
+void error_print(Error_t errorStruct) {
+	// Print the error information to stderr
+	terminal_setStyle(TERMINAL_STYLE_RESET);
+	fprintf(stderr, "\r\n");
+	terminal_setColors(TERMINAL_CLR_BLACK, TERMINAL_CLR_RED);
+	fprintf(stderr, " %s ", errorStruct.name);
+	terminal_setStyle(TERMINAL_STYLE_RESET);
+	terminal_setStyle(TERMINAL_STYLE_BOLD);
+	fprintf(stderr, " %s\r\n", errorStruct.message);
+	terminal_setStyle(TERMINAL_STYLE_RESET);
 }
